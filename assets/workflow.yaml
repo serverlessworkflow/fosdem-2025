@@ -1,0 +1,129 @@
+document:
+  dsl: 1.0.0
+  namespace: default
+  name: galatic-bounty-network
+  version: 0.1.0
+schedule:
+  "on":
+    one:
+      with:
+        type: io.galactic-bounty-network.events.session.initializing.v1
+      correlate:
+        hunter-id:
+          from: subject
+do:
+- initializeConnection:
+    set:
+      hunter: ${ .events[0].data }
+    export:
+      as: '$context + { hunter: . }'
+- greet:
+    emit:
+      event:
+        with:
+          source: https://bounty-network.io
+          type: io.galactic-bounty-network.events.session.initialized.v1
+          subject: ${ .hunter.id }
+          data:
+            message: ${ "Greetings, Hunter \(.hunter.firstName) \(.hunter.lastName).\r\nYou are now connected to the Galactic Bounty Network (GBN).\r\nThe hunt begins." }
+- waitForInput:
+    listen:
+      to:
+        one:
+          with:
+            type: io.galactic-bounty-network.events.command.executing.v1
+          correlate:
+            hunter-id:
+              from: subject
+    export:
+      as: '.[0] as $data | $context + { session: ($context.session + { command: $data.command, commands: ($context.session.commands  + [$data.command]) }) }'
+- processCommand:
+    switch:
+    - listBounties:
+        when: $context.session.command | split(" ") | .[0] == "bounty" and .[1] == "list"
+        then: listBounties
+    - takeContract:
+        when: $context.session.command | split(" ") | .[0] == "bounty" and .[1] == "contract" and .[2] == "take"
+        then: takeContract
+    - abandonContract:
+        when: $context.session.command | split(" ") | .[0] == "bounty" and .[1] == "contract" and .[2] == "abandon"
+        then: abandonContract
+    - trackTarget:
+        when: $context.session.command | split(" ") | .[0] == "bounty" and .[1] == "track"
+        then: trackTarget
+    - logout:
+        when: $context.session.command == "logout"
+        then: logout
+- listBounties:
+    call: openapi
+    with:
+      document:
+        endpoint: http://localhost:5151/docs/open-api.json
+      operationId: listBounties
+    export:
+      as: '$context + { session: ($context.session + { commandOutput: . }), bounties: . }'
+    then: returnCommandOutput
+- takeContract:
+    call: openapi
+    with:
+      document:
+        endpoint: http://localhost:5151/docs/open-api.json
+      operationId: takeContract
+      parameters:
+        bountyId: $context.command | split(" ") | last
+    export:
+      as: '$context + { session: ($context.session + { commandOutput: . }), contract: ($context.bounties[] | select(.id == ($context.session.command | split(" ") | last))) }'
+    then: returnCommandOutput
+- abandonContract:
+    call: openapi
+    with:
+      document:
+        endpoint: http://localhost:5151/docs/open-api.json
+      operationId: abandonContract
+    export:
+      as: '$context |  del(.contract) | . + { session: ($context.session + { commandOutput: "OK" }) }'
+    then: returnCommandOutput
+- trackTarget:
+    call: asyncapi
+    with:
+      document:
+        endpoint: http://localhost:5151/asyncapi/3.0.0/galactic-bounty-network/1.0.0/doc.yaml
+      operation: trackBounty
+      subscription:
+        consume:
+          until: '${ $context.contract.currentLocation == "Kamino" }'
+        foreach:
+          item: message
+          do:
+            - sendFeedback:
+                emit:
+                  event:
+                    with:
+                      source: https://bounty-network.io
+                      type: io.galactic-bounty-network.events.bountry.tracking.feedback.v1
+                      subject: '${ $context.hunter.id }'
+                      data: '${ $message.payload }'
+          export:
+            as: '$context + { contract: ($context.contract + { currentLocation: $message.payload.location }) }'
+    export:
+      as: '$context + { session: ($context.session + { commandOutput: { location: $context.contract.currentLocation } }) }'
+- returnCommandOutput:
+    emit:
+      event:
+        with:
+          source: https://bounty-network.io
+          type: io.galactic-bounty-network.events.command.executed.v1
+          subject: ${ $context.hunter.id }
+          data:
+            output: ${ $context.session.commandOutput }
+    then: waitForInput  
+- logout:
+    emit:
+      event:
+        with:
+          source: https://bountry-network.io
+          type: io.galactic-bounty-network.events.hunter.feedback.sent.v1
+          subject: ${ $context.hunter.id }
+          data:
+            message: Your session has ended
+    then: end

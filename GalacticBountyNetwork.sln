@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalacticBountyNetwork", "src\GalacticBountyNetwork\GalacticBountyNetwork.csproj", "{843CD67B-E3B0-407F-9292-2DF1F50ACE18}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{87BDC960-3B29-4B20-A795-2B4F66F19442}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FBB9A026-7C39-46B2-A137-E09CC1EA1527}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{28F872A4-CF18-4137-9B0A-C995DC8D65DB}"
+	ProjectSection(SolutionItems) = preProject
+		assets\workflow.yaml = assets\workflow.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{843CD67B-E3B0-407F-9292-2DF1F50ACE18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{843CD67B-E3B0-407F-9292-2DF1F50ACE18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{843CD67B-E3B0-407F-9292-2DF1F50ACE18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{843CD67B-E3B0-407F-9292-2DF1F50ACE18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{843CD67B-E3B0-407F-9292-2DF1F50ACE18} = {87BDC960-3B29-4B20-A795-2B4F66F19442}
+	EndGlobalSection
+EndGlobal
