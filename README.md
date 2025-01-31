@@ -4,6 +4,10 @@
 [![FOSDEM 2025](https://img.shields.io/badge/Event-FOSDEM%202025-red)](https://fosdem.org/2025/)
 [![License](https://img.shields.io/badge/License-APACHE__2.0-green)](LICENSE)
 
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Logo_of_FOSDEM_%28with_text%29.svg" alt="FOSDEM logo" />
+</p>
+
 ## 🌟 Overview
 This repository contains a **real-time event-driven workflow demo** built with [Serverless Workflow](https://serverlessworkflow.io), designed for [FOSDEM 2025](https://fosdem.org/2025/).
 
