@@ -100,7 +100,7 @@ do:
                   event:
                     with:
                       source: https://bounty-network.io
-                      type: io.galactic-bounty-network.events.bountry.tracking.feedback.v1
+                      type: io.galactic-bounty-network.events.bounty.tracking.feedback.v1
                       subject: '${ $context.hunter.id }'
                       data: '${ $message.payload }'
           export:
@@ -121,7 +121,7 @@ do:
     emit:
       event:
         with:
-          source: https://bountry-network.io
+          source: https://bounty-network.io
           type: io.galactic-bounty-network.events.hunter.feedback.sent.v1
           subject: ${ $context.hunter.id }
           data:
